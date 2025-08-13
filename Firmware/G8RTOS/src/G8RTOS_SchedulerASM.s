@@ -1,46 +1,4 @@
-; G8RTOS_SchedulerASM.s
-; Created: 2022-07-26
-; Updated: 2022-07-26
-; Contains assembly functions for scheduler.
-
-	; Functions Defined
-	.def G8RTOS_Start, PendSV_Handler
-
-	; Dependencies
-	.ref CurrentlyRunningThread, G8RTOS_Scheduler
-
-	.thumb		; Set to thumb mode
-	.align 2	; Align by 2 bytes (thumb mode uses allignment by 2 or 4)
-	.text		; Text section
-
-; Need to have the address defined in file
-; (label needs to be close enough to asm code to be reached with PC relative addressing)
-RunningPtr: .field CurrentlyRunningThread, 32
-
-; G8RTOS_Start
-;	Sets the first thread to be the currently running thread
-;	Starts the currently running thread by setting Link Register to tcb's Program Counter
-G8RTOS_Start:
-
-	.asmfunc
-
-	; Load the address of RunningPtr
-	LDR R4, RunningPtr
-	; Load the address of the thread control block of the currently running pointer
-	LDR R5, [R4]
-	; Load the first thread's stack pointer
-	LDR R6, [R5]
-	ADD r6, R6, #60
-	STR R6, [R5]
-	MOV SP, R6
-	LDR LR, [R6, #-4]
-
-
-	CPSIE I ; Enable interrupts at processor level
-
-	BX LR				;Branches to the first thread	
-
-	.endasmfunc
+...
 
 ; PendSV_Handler
 ; - Performs a context switch in G8RTOS
